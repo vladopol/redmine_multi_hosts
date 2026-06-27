@@ -4,6 +4,11 @@ module MultiHosts
 
     included do
       before_action :detect_multi_host
+      helper_method :current_multihost
+    end
+
+    def current_multihost
+      @current_multihost
     end
 
     private
@@ -12,14 +17,14 @@ module MultiHosts
       @current_multihost = MultiHost.find_by(host: request.env['HTTP_HOST'])
       if @current_multihost.nil?
         session[:current_multi_host_name] = 'unknown'
-        Thread.current[:current_multihost] = nil
+        MultiHosts::Current.multihost = nil
       elsif @current_multihost.is_default?
         session[:current_multi_host_name] = 'default'
-        Thread.current[:current_multihost] = nil
+        MultiHosts::Current.multihost = nil
       else
         session[:current_multi_host_name] = @current_multihost.internal_name
         Thread.current[:current_multi_host_name] = @current_multihost.internal_name
-        Thread.current[:current_multihost] = @current_multihost
+        MultiHosts::Current.multihost = @current_multihost
       end
     end
   end

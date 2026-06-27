@@ -13,4 +13,12 @@ module MultiHostsHelper
     end
   end
 
+  def page_header_title
+    if @current_multihost && @current_multihost.app_title.present?
+      h(@current_multihost.app_title)
+    else
+      h(Setting.app_title)
+    end
+  end
+
 end

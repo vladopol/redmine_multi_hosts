@@ -11,6 +11,8 @@ require "multi_hosts/hooks"
 require "multi_hosts/detect_host"
 require "multi_hosts/multi_hosts_helper"
 require "multi_hosts/setting_patch"
+require "multi_hosts/current"
+require "multi_hosts/application_helper_patch"
 
 begin
   EasyUserType
@@ -23,34 +25,30 @@ Rails.application.config.after_initialize do
   ApplicationController.send(:include, MultiHosts::DetectHost)
   AccountController.send(:include, MultiHosts::RegisterWithHostname)
   Setting.send(:include, MultiHosts::SettingPatch)
+  ApplicationHelper.send(:prepend, MultiHosts::ApplicationHelperPatch)
+  ApplicationHelper.send(:include, MultiHostsHelper)
 
   Redmine::MenuManager.map :admin_menu do |menu|
     menu.push :multi_hosts, :multi_host_settings_path, :caption => :multi_hosts, :html => {:class => 'icon icon-integrate'}, :if => Proc.new {User.current.admin?}
   end
+end
 
+ActiveSupport.on_load(:action_view) do
+  ActionView::Base.prepend(MultiHosts::ApplicationHelperPatch)
+  prepend MultiHosts::ApplicationHelperPatch
+end
+
+Rails.application.config.to_prepare do
+  ActionView::Base.prepend(MultiHosts::ApplicationHelperPatch)
+end
+
+Rails.application.config.to_prepare do
   ApplicationHelper.module_eval do
-    def html_title(*args)
-      app_title = @current_multihost.try(:app_title) || Setting.app_title_original
-      if args.empty?
-        title = @html_title || []
-        title << @project.name if @project
-        title << app_title unless app_title == title.last
-        title.reject(&:blank?).join(' - ')
-      else
-        @html_title ||= []
-        @html_title += args
-      end
-    end
-
     def page_header_title
       if @current_multihost && @current_multihost.app_title.present?
-        if @project.nil? || @project.new_record?
-          h(@current_multihost.app_title)
-        else
-          h(Setting.app_title_original)
-        end
+        h(@current_multihost.app_title)
       else
-        h(Setting.app_title_original)
+        h(Setting.app_title)
       end
     end
   end
