@@ -8,9 +8,9 @@ module MultiHosts
     end
 
     def set_multi_host_urls
-      if non_default_host_user_present? || Thread.current[:current_multi_host]
+      if non_default_host_user_present? || Thread.current[:current_multihost]
         default_host = MultiHost.default.full_hostname
-        user_multi_host = Thread.current[:current_multi_host] || non_default_host_users.first.multi_host
+        user_multi_host = Thread.current[:current_multihost] || non_default_host_users.first.multi_host
         target_host  = user_multi_host.full_hostname
 
         if user_multi_host.default_mail_from.present?
@@ -18,7 +18,17 @@ module MultiHosts
         end
 
         if user_multi_host.app_title.present?
-          message.subject = message.subject.gsub(Setting.app_title, user_multi_host.app_title)
+          message.subject = message.subject.gsub(Setting.app_title_original, user_multi_host.app_title)
+        end
+
+        if user_multi_host.smtp_address.present?
+          message.delivery_method.settings.merge!(
+            address: user_multi_host.smtp_address,
+            port: user_multi_host.smtp_port || 25,
+            user_name: user_multi_host.smtp_user,
+            password: user_multi_host.smtp_password,
+            authentication: user_multi_host.smtp_authentication || 'login'
+          )
         end
 
         [:html_part, :text_part].each do |partname|
@@ -26,7 +36,7 @@ module MultiHosts
           mcontent.gsub!(default_host, target_host)
 
           if user_multi_host.app_title.present?
-            mcontent.gsub!(Setting.app_title, user_multi_host.app_title)
+            mcontent.gsub!(Setting.app_title_original, user_multi_host.app_title)
           end
 
           message.send(partname).body.raw_source.replace(mcontent)
