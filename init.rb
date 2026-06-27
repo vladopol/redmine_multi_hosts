@@ -10,30 +10,27 @@ require "multi_hosts/user_extension"
 require "multi_hosts/hooks"
 require "multi_hosts/detect_host"
 require "multi_hosts/multi_hosts_helper"
+require "multi_hosts/setting_patch"
 
 begin
   EasyUserType
 rescue Exception
-  # call EasyUserType to make shure its defined?
 end
-
 
 Rails.application.config.after_initialize do
   Mailer.send(:include, MultiHosts::MailerExtension)
   User.send(:include, MultiHosts::UserExtension)
-
   ApplicationController.send(:include, MultiHosts::DetectHost)
   AccountController.send(:include, MultiHosts::RegisterWithHostname)
+  Setting.send(:include, MultiHosts::SettingPatch)
 
   Redmine::MenuManager.map :admin_menu do |menu|
     menu.push :multi_hosts, :multi_host_settings_path, :caption => :multi_hosts, :html => {:class => 'icon icon-integrate'}, :if => Proc.new {User.current.admin?}
   end
 
-
   ApplicationHelper.module_eval do
     def html_title(*args)
-
-      app_title = @current_multihost.try(:app_title) || Setting.app_title
+      app_title = @current_multihost.try(:app_title) || Setting.app_title_original
       if args.empty?
         title = @html_title || []
         title << @project.name if @project
@@ -42,6 +39,18 @@ Rails.application.config.after_initialize do
       else
         @html_title ||= []
         @html_title += args
+      end
+    end
+
+    def page_header_title
+      if @current_multihost && @current_multihost.app_title.present?
+        if @project.nil? || @project.new_record?
+          h(@current_multihost.app_title)
+        else
+          h(Setting.app_title_original)
+        end
+      else
+        h(Setting.app_title_original)
       end
     end
   end

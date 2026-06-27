@@ -3,21 +3,23 @@ module MultiHosts
     extend ActiveSupport::Concern
 
     included do
-      before_filter :detect_multi_host
+      before_action :detect_multi_host
     end
 
     private
 
     def detect_multi_host
-      if session[:current_multi_host_name].nil?
-        @current_multihost = MultiHost.find_by(host: request.env['HTTP_HOST'])
-        if @current_multihost.nil?
-          session[:current_multi_host_name] = 'unknown'
-        elsif @current_multihost.is_default?
-          session[:current_multi_host_name] = 'default'
-        else
-          session[:current_multi_host_name] = Thread.current[:current_multi_host_name] = @current_multihost.internal_name
-        end
+      @current_multihost = MultiHost.find_by(host: request.env['HTTP_HOST'])
+      if @current_multihost.nil?
+        session[:current_multi_host_name] = 'unknown'
+        Thread.current[:current_multihost] = nil
+      elsif @current_multihost.is_default?
+        session[:current_multi_host_name] = 'default'
+        Thread.current[:current_multihost] = nil
+      else
+        session[:current_multi_host_name] = @current_multihost.internal_name
+        Thread.current[:current_multi_host_name] = @current_multihost.internal_name
+        Thread.current[:current_multihost] = @current_multihost
       end
     end
   end

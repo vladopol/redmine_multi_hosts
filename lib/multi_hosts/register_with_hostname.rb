@@ -3,8 +3,8 @@ module MultiHosts
     extend ActiveSupport::Concern
 
     included do
-      before_filter :store_multi_host_name_for_thread, only: :register
-      after_filter :set_user_multihost_id, only: :register
+      before_action :store_multi_host_name_for_thread, only: :register
+      after_action :set_user_multihost_id, only: :register
     end
 
     private
@@ -32,7 +32,7 @@ module MultiHosts
           user_host_attributes[:easy_user_type_id] = @current_multihost.default_easy_user_type_id
         end
 
-        @user.update_attributes(user_host_attributes)
+        @user.update(user_host_attributes)
       end
     end
   end
