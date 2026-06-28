@@ -19,7 +19,10 @@ begin
 rescue Exception
 end
 
+
+
 Rails.application.config.after_initialize do
+  ActiveJob::Base.queue_adapter = :inline
   Mailer.send(:include, MultiHosts::MailerExtension)
   User.send(:include, MultiHosts::UserExtension)
   ApplicationController.send(:include, MultiHosts::DetectHost)
