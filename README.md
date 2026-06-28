@@ -1,40 +1,64 @@
-# Redmine MultiHosts Plugin
+# Redmine Multi Hosts
 
-Support for running one Redmine Installation under multiple host names by assigning a hostname to every user.
-Links in sent emails will then point to the hostname assigned to the user instead of the hostname set in the Redmine settings.
-Also custom styles for different host names can be applied
+A Redmine plugin that allows running one Redmine installation with multiple hostnames, each with its own branding, email sender, and SMTP settings.
 
-## Usecase
-Running the same Redmine installation under multiple hosts (e.g. via ReverseProxy).
-This nmight happen when customers should get a customized login to the Redmine System
+This is a fork of [florianeck/redmine_multi_hosts](https://github.com/florianeck/redmine_multi_hosts) with compatibility fixes for Redmine 4.x / Rails 5.x and new features.
+
+## What's new in this fork
+
+- **Rails 5.x / Redmine 4.x compatibility** — fixed deprecated `before_filter`, `after_filter`, `update_attributes` and migration syntax
+- **Per-host SMTP settings** — each host can use its own SMTP server, credentials and sender address
+- **Page header branding** — app title is now correctly overridden in all pages including project pages
+- **New host UI** — added "New Host" button and form directly in the admin interface
+- **Localization** — English and Russian translations
+
+## Requirements
+
+- Redmine 4.x
+- Rails 5.2.x
+
+## Installation
+
+```bash
+cd /path/to/redmine/plugins
+git clone https://github.com/vladopol/redmine_multi_hosts.git
+cd /path/to/redmine
+bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+touch tmp/restart.txt
+```
 
 ## Setup
 
-- Run `rake redmine:plugins:migrate` to setup the tables and add a column `multi host_id` to users table
-- Run `rake multi_hosts:setup_default_host`
-- Run `rake multi_hosts:setup_stylesheets` to setup the custom stylesheets for the existing hostnames.
+After installation, go to **Administration → MultiHosts** and:
 
+1. Click **New Host** to add your default host (or run rake task below)
+2. Add additional hosts with their own branding and SMTP settings
 
-## Adding Hostnames
-Just run `rake multi_hosts:add_host[http://www.example.com/]` to add a new host.
+Or use rake tasks:
 
-## Caveats
-As Redmine uses the BCC field to send an email to multiple recipients, mixups between users/hostnames might happen.
-The plugin always uses the first found hostname if the are any users included in the recipients list that have a custom host.
+```bash
+# Setup default host based on current Redmine settings
+bundle exec rake multi_hosts:setup_default_host RAILS_ENV=production
 
+# Add a new host
+bundle exec rake "multi_hosts:add_host[https://support.example.com/]" RAILS_ENV=production
+```
 
-## Info
+## Per-host settings
 
-This Plugin was created by Florian Eck ([EL Digital Solutions](http://www.el-digital.de)) for [akquinet finance & controlling GmbH](http://www.akquinet.de/).
+Each host supports:
 
-It is licensed under GNU GENERAL PUBLIC LICENSE.
+- **App Title** — custom application name shown in header and emails
+- **Default Mail From** — sender email address for notifications
+- **SMTP settings** — address, port, user, password, authentication method
 
-It has been tested with EasyRedmine, but should also work for regular Redmine installations. If you find any bugs, please file an issue or create a PR.
+## How it works
 
-## Todo
+The plugin detects the current hostname from each HTTP request and applies the corresponding settings:
+- Overrides the page header title
+- Uses per-host SMTP for outgoing email notifications
+- Replaces app title in email subjects and body
 
-- Change default sender adress ( needs to be stored in the Hostname entry)
-- Change Redmine App Name
-- Signup must set the hostname id for the user as well
-- Add empty stylesheet when adding hosts, also move stylesheets to plugin folder
-- Copy Stylessheets to public folder if they are not there
+## Original plugin
+
+This plugin is based on [redmine_multi_hosts](https://github.com/florianeck/redmine_multi_hosts) by Florian Eck for akquinet.
