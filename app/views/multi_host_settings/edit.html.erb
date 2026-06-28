@@ -1,12 +1,12 @@
-<%= title t("edit_multi_host", name: @multi_host.full_hostname)  %>
+<%= title t("edit_multi_host", name: @multi_host.full_hostname) %>
 
 <%= labelled_form_for :multi_host, @multi_host, :url => multi_host_setting_path(@multi_host), :html => {:method => :put} do |f| %>
   <%= error_messages_for 'multi_host' %>
 
   <div class="box tabular">
-    <p><%= f.text_field :app_title %></p>
-    <p><%= f.text_field :default_mail_from %></p>
-    <p><%= f.text_field :internal_name %></p>
+    <p><%= f.text_field :app_title, :label => l(:field_app_title) %></p>
+    <p><%= f.text_field :default_mail_from, :label => l(:field_default_mail_from) %></p>
+    <p><%= f.text_field :internal_name, :label => l(:field_internal_name) %></p>
     <p><%= f.select :default_group_id, Group.all.map {|g| [g.name, g.id]}, include_blank: true %></p>
     <% if defined?(EasyUserType) %>
       <p><%= f.select :default_easy_user_type_id, EasyUserType.all.map {|g| [g.name, g.id]}, include_blank: true %></p>
@@ -15,10 +15,10 @@
 
   <div class="box tabular">
     <h3>SMTP</h3>
-    <p><%= f.text_field :smtp_address, placeholder: 'mail.example.com' %></p>
-    <p><%= f.number_field :smtp_port, placeholder: '25' %></p>
-    <p><%= f.text_field :smtp_user %></p>
-    <p><%= f.password_field :smtp_password %></p>
+    <p><%= f.text_field :smtp_address, :label => l(:field_smtp_address), placeholder: 'mail.example.com' %></p>
+    <p><%= f.number_field :smtp_port, :label => l(:field_smtp_port), placeholder: '25' %></p>
+    <p><%= f.text_field :smtp_user, :label => l(:field_smtp_user) %></p>
+    <p><%= f.password_field :smtp_password, :label => l(:field_smtp_password) %></p>
     <p><%= f.select :smtp_authentication, [['login', 'login'], ['plain', 'plain'], ['cram_md5', 'cram_md5']], include_blank: true %></p>
   </div>
 

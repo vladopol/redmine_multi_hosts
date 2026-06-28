@@ -1,0 +1,21 @@
+ru:
+  multi_hosts: МультиХосты
+  label_multi_host_new: Новый хост
+  edit_multi_host: "Редактировать %{name}"
+  field_full_hostname: Полный адрес
+  field_protocol: Протокол
+  field_host: Хост
+  field_port: Порт
+  field_is_default: По умолчанию?
+  field_internal_name: Внутреннее имя
+  field_default_mail_from: Email отправителя
+  field_app_title: Название приложения
+  field_default_group_name: Группа по умолчанию
+  field_default_group: Группа по умолчанию
+  field_default_easy_user_type: Тип пользователя
+  field_default_easy_user_type_name: Тип пользователя
+  field_smtp_address: Адрес SMTP сервера
+  field_smtp_port: Порт SMTP
+  field_smtp_user: Пользователь SMTP
+  field_smtp_password: Пароль SMTP
+  field_smtp_authentication: Аутентификация SMTP

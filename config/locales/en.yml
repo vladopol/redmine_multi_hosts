@@ -1,8 +1,8 @@
 en:
-  field_multi_host: Hostname
   multi_hosts: MultiHosts
-  edit_multi_host: Edit %{name}
-  field_full_hostname: Full hostname
+  label_multi_host_new: New Host
+  edit_multi_host: "Edit %{name}"
+  field_full_hostname: Full Hostname
   field_protocol: Protocol
   field_host: Host
   field_port: Port
@@ -14,3 +14,8 @@ en:
   field_default_group: Default Group
   field_default_easy_user_type: Default EasyUserType
   field_default_easy_user_type_name: Default EasyUserType
+  field_smtp_address: SMTP Address
+  field_smtp_port: SMTP Port
+  field_smtp_user: SMTP User
+  field_smtp_password: SMTP Password
+  field_smtp_authentication: SMTP Authentication
