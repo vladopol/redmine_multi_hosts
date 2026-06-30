@@ -1,5 +1,5 @@
 ru:
-  multi_hosts: МультиХосты
+  multi_hosts: MultiHost
   label_multi_host_new: Новый хост
   edit_multi_host: "Редактировать %{name}"
   field_full_hostname: Полный адрес
@@ -19,3 +19,4 @@ ru:
   field_smtp_user: Пользователь SMTP
   field_smtp_password: Пароль SMTP
   field_smtp_authentication: Аутентификация SMTP
+  field_project_multi_host: Организация (MultiHost)

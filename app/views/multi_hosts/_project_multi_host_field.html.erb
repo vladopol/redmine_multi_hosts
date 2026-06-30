@@ -1,0 +1,8 @@
+<p>
+  <label for="project_multi_host_id"><%= l(:field_project_multi_host) %></label>
+  <%= select_tag 'project[multi_host_id]',
+        options_for_select(
+          [[l(:label_none), '']] + hosts.map { |h| [h.app_title.presence || h.full_hostname, h.id] },
+          project.multi_host_id
+        ) %>
+</p>

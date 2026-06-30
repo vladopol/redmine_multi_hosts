@@ -1,5 +1,5 @@
 en:
-  multi_hosts: MultiHosts
+  multi_hosts: MultiHost
   label_multi_host_new: New Host
   edit_multi_host: "Edit %{name}"
   field_full_hostname: Full Hostname
@@ -19,3 +19,4 @@ en:
   field_smtp_user: SMTP User
   field_smtp_password: SMTP Password
   field_smtp_authentication: SMTP Authentication
+  field_project_multi_host: Organization (Multi Host)

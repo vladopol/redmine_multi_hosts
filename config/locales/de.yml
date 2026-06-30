@@ -1,6 +1,6 @@
 de:
   field_multi_host: Hostname
-  multi_hosts: MultiHosts
+  multi_hosts: MultiHost
   edit_multi_host: Host %{name} bearbeiten
   field_full_hostname: Voller Hostname
   field_protocol: Protokoll
